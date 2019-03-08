@@ -1,0 +1,52 @@
+	Algoritmul meu curpinde implementarea functiilor move, insert, delete, copy, paste, backspace, replace, undo si
+redo(de un numar multiplu de ori). La baza implementarii stau atat listele circulare duble inlantuite cu operatiile simple
+aferente pe aceste structuri de date: stergerea unui nod,inserarea unui nod, copierea unui nod, dar si o stiva.
+	Scopurile functiilor sunt urmatoarele:
+*move - avanseaza/devanseaza in lista, deplasandu-se de n ori printr-un for i = 0:n, fata de pozitia curenta, numar specificat
+	ca parametru. Se verifica daca in urma deplasarii se depaseste lungime listei, iar in acest caz, pointerul catre
+	nodul curent va fi la inceputul/sfarsitul listei iar numarul n este actualizat cu o noua valoare si anume numarul de 
+	noduri cu care s-a deplasat. Se returneaza pointer catre noua pozitie. 
+*undo_move - inverseaza operatiile facute cu functia move, pointerul catre poziia curenta  miscandu-se in sens 
+	     contrar fata de pozitia curenta printr-un for i = 0:n si anume daca n>0 devanseaza si daca n<0 avanseaza.
+	     Se returneaza pointer catre noua pozitie
+*insert - functia introduce un numar de noduri egal cu lungimea L a sirului primit ca parametru pe pozitia curenta. Intai 
+	  se aloca memorie pentru fiecare nod , se stabilesc legaturile cu nodul anterior/urmator si se initializeaza cu o 
+	  litera din sirul respectiv. Procesul se repeta for i = 0:L. Pointerul returnat va indica catre nodul imediat urmator
+	  ultimulului nod introdus. 
+*del - sterge n noduri (n primit ca parametru), incepand cu pozitia curenta. Se memoreaza adresa pozitiei curente, se stabilesc
+	legaturi intre nodul anterior si cel posterior celui curent, astfel incat niciunul sa nu mai pointeze catre cel curent si
+	se elibereaza memoria. Fiecare camp caracter din fiecare nod va fi memorat intr-un sir de caractere. Se returneaza pointer
+	catre adresa urmatorului nod indicat de ultimul sters
+*undo_del - insereaza nodurile sterse anterior. Foloseste functia insert pentru a aloca memorie si a crea nodurile ce reprezinta
+	    fiecare caracter.
+*undo_insert - sterge nodurile adaugate. Pointerul pozitiei curente se muta pe primul nod introdus in functia insert si prin 
+		apelarea functiei del se vor sterge urmatoarele noduri(for i = 0: strlen(sir introdus in insert))
+*copy - creeaza inca o lista circulara dubla care contine informatiile nodurilor copiate si returneaza adresa primului element din acea
+	lista. Se aloca memorie si se initializeaza fiecare nod, iar pozitia curenta a cursorului nu se schimba
+*paste - creeaza o noua lista (identica cu cea copiata in functia copy) ce va fi inserata in prima lista, cea copiata 
+	 in functia copy fiind pastrata in caz de inca o apelare a functiei paste ulterioara. Se stabilesc legaturile intre noduri,
+	  noua lista fiind inserata incepand cu pozitia curenta
+*undo_paste - se elimina nodurile inserate in functia paste prin "distrugerea" legaturilor dintre noduri, eliberandu-se memoria
+*backspace - sterge nodul anterior celui care indica pozitia curenta. Se va memora adresa nodului  curent, dupa care se va muta
+	     pe cel anterior, dupa se vor modifica adresele catre care pointeaza nodul anterior(campul urmator), respectiv cel urmator
+	     (campul precedent). Se sterge nodul respectiv si se returneaza pointer catre adresa nodului urmator
+*undo_backspace - insereaza un nod cu caracterul sters primit ca parametru pe pozitia anterioara celei curente. Intai se va aloca
+		   memorie pentru noul nod, dupa care se vor stabili legaturile. Functia returneaza pointer catre nodul imediat urmator
+		   celui inserat
+*replace - cauta o secventa de noduri care sa corespunda cu un anumit sir (sir_vechi) primit ca parametru de lungime lvechi(intai prima litera,
+	   iar ulterior se verifica restul de lvechi-1 noduri ramase), retinandu-se adresa primului nod comun. Daca toate corespund, campul 
+	   caracter din fiecare nod va fi inlocuit cu un caracter din noul sir. Pentru aceasta functie se disting 3 cazuri: 
+		1. cele doua siruri primite ca parametru (sir_vechi, sir_nou) au aceeasi lungime: atunci doar se updateaza campul caracter din structuri 
+		2. sirul_vechi are lungimea lvechi mai mica ca sirul_nou care o are lnou: se updateaza campul caracter pentru lvechi noduri
+		 si se insereaza lnou-lvechi noduri suplimentare (apeleaza functia insert)
+		3. sirul vechi are lungime lvechi mai mare ca sirul_nou care o are lnou: se actualizeaza campul caracter cu cate o litera pentru lnou
+	            noduri, dupa care se vor sterge urmatoarele lvechi-lnou noduri (apeleaza functai del)
+Functiile undo si redo implementate de un numar multiplu de ori se bazeaza pe doua stive. In timp ce citesc operatiile din fisier le pun in stiva1. La efectuarea 
+operatiei undo, se scoate ultimul element din stiva1, se realizeaza inversul, si se introduce in stiva2. La functia redo, se scoate operatie din stiva2,
+se apeleaza iar functia pentru efectuarea ei si se introduce in stiva1. 
+	Functiile pentru stiva:
+*creare_stiva - aloca memorie pentru stiva si ii initializeaza campurile lungime cu 0 si adresa primului element cu NULL
+		deoarece este goala momentan
+*creare_nod - aloca memorie pentru fiecare nod ce va fi inserat in stiva si il "populeaza" cu informatiile necesare
+*push - introduce elemente in stiva, apeland functia creare_nod, modifica lungimea stivei, leaga ultimul nod introdus in stiva de
+	cel nou si pointerul care indica catre adresa ultimului element introdus va indica acum catre noul nod
